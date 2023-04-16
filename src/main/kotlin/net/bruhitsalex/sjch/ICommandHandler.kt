@@ -8,17 +8,17 @@ import net.bruhitsalex.sjch.utils.Utils
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Member
-import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
+import net.dv8tion.jda.internal.entities.channel.concrete.TextChannelImpl
 import java.time.LocalDateTime
+import java.util.*
 import java.util.concurrent.Executors
-import kotlin.reflect.KParameter
 
 const val defaultHandlerId = "default"
 
 open class ICommandHandler(
-    private val bot: JDA,
+    private val bot: JDA?,
     private val commandsBasePackage: String,
     private val handlerId: String = defaultHandlerId,
     private val commandPrefix: String = "!",
@@ -60,16 +60,16 @@ open class ICommandHandler(
             return
         }
 
-        val paramMap = mutableMapOf<KParameter, Any>()
-        if (cmd.executeFunction?.parameters != null) {
-            for (parameter in cmd.executeFunction.parameters) {
+        val params = mutableListOf<Any>()
+        if (cmd.executeFunction.parameters != null) {
+            for ((i, parameter) in cmd.executeFunction.parameters.withIndex()) {
                 when (parameter.type) {
-                    MessageReceivedEvent::class.java -> paramMap[parameter] = event
-                    List::class.java -> paramMap[parameter] = commandArgs
-                    Member::class.java -> paramMap[parameter] = event.member!!
-                    MessageChannelUnion::class.java -> paramMap[parameter] = event.channel
-                    JDA::class.java -> paramMap[parameter] = bot
-                    EmbedBuilder::class.java -> paramMap[parameter] = createDefaultEmbed()
+                    MessageReceivedEvent::class.java -> params.add(event)
+                    List::class.java -> params.add(commandArgs)
+                    Member::class.java -> params.add(event.member!!)
+                    TextChannelImpl::class.java -> params.add(event.channel)
+                    JDA::class.java -> params.add(bot!!)
+                    EmbedBuilder::class.java -> params.add(createDefaultEmbed())
                     else -> throw IllegalArgumentException("Unknown parameter type: ${parameter.type}")
                 }
             }
@@ -80,7 +80,9 @@ open class ICommandHandler(
         runBlocking {
             launch(threadPool) {
                 try {
-                    cmd.executeFunction?.callBy(paramMap)
+                    println(params[0].javaClass.name)
+                    println(Arrays.toString(cmd.executeFunction.parameters))
+                    cmd.executeFunction.invoke(null, params.toTypedArray())
                 } catch (e: Exception) {
                     event.message.replyEmbeds(createBadEmbed("Command Error", "An error occurred while executing the command `${cmd.name}`!").build()).queue()
                     e.printStackTrace()

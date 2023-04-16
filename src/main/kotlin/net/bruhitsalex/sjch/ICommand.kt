@@ -1,12 +1,16 @@
 package net.bruhitsalex.sjch
 
-import net.bruhitsalex.sjch.types.AcceptedParams
-import kotlin.reflect.KCallable
+import java.lang.reflect.Method
 
-open class ICommand(
+class ICommand(
     val name: String,
     val cooldown: Int,
     val rolesRequired: List<String>,
-    val executeFunction: KCallable<*>?,
-    val acceptedParams: List<AcceptedParams>
-)
+    val executeFunction: Method
+) {
+
+    init {
+        executeFunction.isAccessible = true
+    }
+
+}

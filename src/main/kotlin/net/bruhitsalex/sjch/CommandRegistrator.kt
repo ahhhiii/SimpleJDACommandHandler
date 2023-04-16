@@ -1,12 +1,7 @@
 package net.bruhitsalex.sjch
 
 import io.github.classgraph.ClassGraph
-import net.bruhitsalex.sjch.types.AcceptedParams
-import net.dv8tion.jda.api.EmbedBuilder
-import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.Member
-import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
@@ -43,9 +38,9 @@ class CommandRegistrator {
                 }
 
                 if (classInfo.hasAnnotation("net.bruhitsalex.sjch.annotations.RolesRequired")) {
-                    rolesRequired = classInfo
+                    rolesRequired = (classInfo
                         .getAnnotationInfo("net.bruhitsalex.sjch.annotations.RolesRequired")
-                        .parameterValues.getValue("roles") as List<String>
+                        .parameterValues.getValue("roles") as Array<String>).toList()
                 }
 
                 val executeFunction = classInfo.loadClass().methods.find { it.name == "execute" }
@@ -54,25 +49,7 @@ class CommandRegistrator {
                     return@forEach
                 }
 
-                val acceptedParams = mutableListOf<AcceptedParams>()
-                for (parameter in executeFunction.parameters) {
-                    when (parameter.type) {
-                        MessageReceivedEvent::class.java -> acceptedParams.add(AcceptedParams.EVENT)
-                        List::class.java -> acceptedParams.add(AcceptedParams.ARGS)
-                        Member::class.java -> acceptedParams.add(AcceptedParams.AUTHOR)
-                        MessageChannelUnion::class.java -> acceptedParams.add(AcceptedParams.CHANNEL)
-                        JDA::class.java -> acceptedParams.add(AcceptedParams.BOT)
-                        EmbedBuilder::class.java -> acceptedParams.add(AcceptedParams.DEFAULT_EMBED)
-                        else -> {
-                            logger.error("Command $commandName has an invalid parameter type: ${parameter.type}")
-                            return@forEach
-                        }
-                    }
-                }
-
-                val kFunction = classInfo.loadClass().kotlin.members.find { it.name == "execute" }
-
-                val command = ICommand(commandName, cooldown, rolesRequired, kFunction, acceptedParams)
+                val command = ICommand(commandName, cooldown, rolesRequired, executeFunction)
                 commands[commandName] = command
                 logger.info("Registered command $commandName for handler $handlerID")
             }
