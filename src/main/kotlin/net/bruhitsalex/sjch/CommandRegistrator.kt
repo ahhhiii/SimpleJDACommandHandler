@@ -49,7 +49,9 @@ class CommandRegistrator {
                     return@forEach
                 }
 
-                val command = ICommand(commandName, cooldown, rolesRequired, executeFunction)
+                val instance = classInfo.loadClass().getConstructor().newInstance()
+
+                val command = ICommand(commandName, cooldown, rolesRequired, executeFunction, instance)
                 commands[commandName] = command
                 logger.info("Registered command $commandName for handler $handlerID")
             }

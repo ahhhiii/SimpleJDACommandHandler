@@ -12,18 +12,17 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.internal.entities.channel.concrete.TextChannelImpl
 import java.time.LocalDateTime
-import java.util.*
 import java.util.concurrent.Executors
 
 const val defaultHandlerId = "default"
 
 open class ICommandHandler(
     private val bot: JDA?,
-    private val commandsBasePackage: String,
-    private val handlerId: String = defaultHandlerId,
+    commandsBasePackage: String,
+    handlerId: String = defaultHandlerId,
     private val commandPrefix: String = "!",
     private val announceUnknownCommand: Boolean = false,
-    private val threadCount: Int = 2,
+    threadCount: Int = 2,
     private val embedInformation: EmbedInformation = EmbedInformation("Template", "2020", "https://storage.needpix.com/thumbs/bot-icon-2883144_1280.png")
 ): ListenerAdapter() {
 
@@ -35,7 +34,7 @@ open class ICommandHandler(
     }
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
-        if (event.author.isBot || !event.message.contentRaw.startsWith("!") || event.member == null) return
+        if (event.author.isBot || !event.message.contentRaw.startsWith(commandPrefix) || event.member == null) return
 
         val args = event.message.contentRaw.split(" ")
         val requestedCmdName = args[0].substring(1)
@@ -60,16 +59,16 @@ open class ICommandHandler(
             return
         }
 
-        val params = mutableListOf<Any>()
+        val params = Array<Any>(size = cmd.executeFunction.parameters.size, init = {})
         if (cmd.executeFunction.parameters != null) {
             for ((i, parameter) in cmd.executeFunction.parameters.withIndex()) {
                 when (parameter.type) {
-                    MessageReceivedEvent::class.java -> params.add(event)
-                    List::class.java -> params.add(commandArgs)
-                    Member::class.java -> params.add(event.member!!)
-                    TextChannelImpl::class.java -> params.add(event.channel)
-                    JDA::class.java -> params.add(bot!!)
-                    EmbedBuilder::class.java -> params.add(createDefaultEmbed())
+                    MessageReceivedEvent::class.java -> params[i] = (event)
+                    List::class.java -> params[i] = (commandArgs)
+                    Member::class.java -> params[i] = (event.member!!)
+                    TextChannelImpl::class.java -> params[i] = (event.channel)
+                    JDA::class.java -> params[i] = (bot!!)
+                    EmbedBuilder::class.java -> params[i] = (createDefaultEmbed())
                     else -> throw IllegalArgumentException("Unknown parameter type: ${parameter.type}")
                 }
             }
@@ -80,9 +79,7 @@ open class ICommandHandler(
         runBlocking {
             launch(threadPool) {
                 try {
-                    println(params[0].javaClass.name)
-                    println(Arrays.toString(cmd.executeFunction.parameters))
-                    cmd.executeFunction.invoke(null, params.toTypedArray())
+                    cmd.executeFunction.invoke(cmd.instance, *params)
                 } catch (e: Exception) {
                     event.message.replyEmbeds(createBadEmbed("Command Error", "An error occurred while executing the command `${cmd.name}`!").build()).queue()
                     e.printStackTrace()

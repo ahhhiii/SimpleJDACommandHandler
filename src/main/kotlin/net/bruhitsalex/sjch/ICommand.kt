@@ -6,7 +6,8 @@ class ICommand(
     val name: String,
     val cooldown: Int,
     val rolesRequired: List<String>,
-    val executeFunction: Method
+    val executeFunction: Method,
+    val instance: Any
 ) {
 
     init {
