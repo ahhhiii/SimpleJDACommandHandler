@@ -7,7 +7,10 @@ import net.bruhitsalex.sjch.types.EmbedInformation
 import net.bruhitsalex.sjch.utils.Utils
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.Member
+import net.dv8tion.jda.api.entities.Message
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import net.dv8tion.jda.internal.entities.channel.concrete.TextChannelImpl
@@ -66,7 +69,10 @@ open class ICommandHandler(
                     MessageReceivedEvent::class.java -> params[i] = (event)
                     List::class.java -> params[i] = (commandArgs)
                     Member::class.java -> params[i] = (event.member!!)
+                    Guild::class.java -> params[i] = (event.guild)
                     TextChannelImpl::class.java -> params[i] = (event.channel)
+                    TextChannel::class.java -> params[i] = (event.channel)
+                    Message::class.java -> params[i] = (event.message)
                     JDA::class.java -> params[i] = (bot!!)
                     EmbedBuilder::class.java -> params[i] = (createDefaultEmbed())
                     else -> throw IllegalArgumentException("Unknown parameter type: ${parameter.type}")
