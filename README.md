@@ -9,18 +9,32 @@ Lightweight library to create commands for JDA using annotations, with autofill 
 #### Maven
 
 ```xml
-PLACEHOLDER
-<dependency>
-    <groupId>net.bruhitsalex.sjch</groupId>
-    <artifactId>simplejdacommandhandler</artifactId>
-    <version>1.0.0</version>
-</dependency>
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>com.github.bruhitsalex</groupId>
+        <artifactId>SimpleJDACommandHandler</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+</dependencies>
 ```
 
 #### Gradle
 
 ```groovy
-implementation 'PLACEHOLDER'
+repositories {
+    maven { url = "https://jitpack.io" }
+}
+
+dependencies {
+    implementation("com.github.bruhitsalex:SimpleJDACommandHandler:1.0-SNAPSHOT")
+}
 ```
 
 This library is written in Kotlin, but the method in Java is the same.
