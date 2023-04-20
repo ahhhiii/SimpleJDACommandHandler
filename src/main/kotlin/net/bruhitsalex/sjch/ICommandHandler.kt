@@ -26,10 +26,14 @@ open class ICommandHandler(
     private val commandPrefix: String = "!",
     private val announceUnknownCommand: Boolean = false,
     threadCount: Int = 2,
-    private val embedInformation: EmbedInformation = EmbedInformation("Template", "2020", "https://storage.needpix.com/thumbs/bot-icon-2883144_1280.png")
+    private val embedInformation: EmbedInformation = EmbedInformation(
+        "Template",
+        "2020",
+        "https://storage.needpix.com/thumbs/bot-icon-2883144_1280.png"
+    )
 ): ListenerAdapter() {
 
-    private val commandRegistrator = CommandRegistrator()
+    val commandRegistrator = CommandRegistrator()
     private val threadPool = Executors.newFixedThreadPool(threadCount).asCoroutineDispatcher()
 
     init {
@@ -59,6 +63,11 @@ open class ICommandHandler(
 
         if (!commandRegistrator.hasRequiredRoles(event.member!!, cmd)) {
             event.message.replyEmbeds(createBadEmbed("Missing Roles", "You are missing the required roles to execute this command!").build()).queue()
+            return
+        }
+
+        if (cmd.channelsRequired != null && !cmd.channelsRequired.contains(event.channel.id)) {
+            event.message.replyEmbeds(createBadEmbed("Wrong Channel", "This command cannot be used in this channel.").build()).queue()
             return
         }
 
