@@ -20,7 +20,7 @@ Lightweight library to create commands for JDA using annotations, with autofill 
     <dependency>
         <groupId>com.github.bruhitsalex</groupId>
         <artifactId>SimpleJDACommandHandler</artifactId>
-        <version>1.0.2-SNAPSHOT</version>
+        <version>1.0.3-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.bruhitsalex:SimpleJDACommandHandler:1.0.2-SNAPSHOT")
+    implementation("com.github.bruhitsalex:SimpleJDACommandHandler:1.0.3-SNAPSHOT")
 }
 ```
 
