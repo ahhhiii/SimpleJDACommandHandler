@@ -4,6 +4,7 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.bruhitsalex.sjch.types.EmbedInformation
+import net.bruhitsalex.sjch.types.HandlerId
 import net.bruhitsalex.sjch.utils.Utils
 import net.dv8tion.jda.api.EmbedBuilder
 import net.dv8tion.jda.api.JDA
@@ -22,7 +23,7 @@ const val defaultHandlerId = "default"
 open class ICommandHandler(
     private val bot: JDA?,
     commandsBasePackage: String,
-    handlerId: String = defaultHandlerId,
+    private val handlerId: String = defaultHandlerId,
     private val commandPrefix: String = "!",
     private val announceUnknownCommand: Boolean = false,
     threadCount: Int = 2,
@@ -84,6 +85,9 @@ open class ICommandHandler(
                     Message::class.java -> params[i] = (event.message)
                     JDA::class.java -> params[i] = (bot!!)
                     EmbedBuilder::class.java -> params[i] = (createDefaultEmbed())
+                    ICommandHandler::class.java -> params[i] = (this)
+                    CommandRegistrator::class.java -> params[i] = (commandRegistrator)
+                    HandlerId::class.java -> params[i] = (HandlerId(handlerId))
                     else -> throw IllegalArgumentException("Unknown parameter type: ${parameter.type}")
                 }
             }
