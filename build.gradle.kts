@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "net.bruhitsalex.sjch"
-version = "1.0.2-SNAPSHOT"
+version = "1.0.3-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -29,7 +29,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "net.bruhitsalex.sjch"
             artifactId = "sjch"
-            version = "1.0.2-SNAPSHOT"
+            version = "1.0.3-SNAPSHOT"
 
             from(components["java"])
         }

@@ -38,8 +38,8 @@ class CommandRegistrator {
         val description: String? = getClassAnnotationValue(classInfo, "net.bruhitsalex.sjch.annotations.Description", "description")
         val usage: String? = getClassAnnotationValue(classInfo, "net.bruhitsalex.sjch.annotations.Usage", "usage")
         val cooldown: Int? = getClassAnnotationValue(classInfo, "net.bruhitsalex.sjch.annotations.Cooldown", "time")
-        val rolesRequired: List<String>? = getClassAnnotationValue(classInfo, "net.bruhitsalex.sjch.annotations.RolesRequired", "roles")
-        val channelsRequired: List<String>? = getClassAnnotationValue(classInfo, "net.bruhitsalex.sjch.annotations.RestrictToChannels", "channels")
+        val rolesRequired: Array<String>? = getClassAnnotationValue(classInfo, "net.bruhitsalex.sjch.annotations.RolesRequired", "roles")
+        val channelsRequired: Array<String>? = getClassAnnotationValue(classInfo, "net.bruhitsalex.sjch.annotations.RestrictToChannels", "channels")
 
         val executeFunction = classInfo.loadClass().methods.find { it.name == "execute" }
         if (executeFunction == null) {
@@ -49,7 +49,7 @@ class CommandRegistrator {
 
         val instance = classInfo.loadClass().getConstructor().newInstance()
 
-        val command = ICommand(commandName, description, usage, cooldown, rolesRequired, channelsRequired, executeFunction, instance)
+        val command = ICommand(commandName, description, usage, cooldown, rolesRequired?.toList(), channelsRequired?.toList(), executeFunction, instance)
         commands[commandName] = command
         logger.info("Registered command $commandName for handler $handlerID")
     }
