@@ -75,12 +75,20 @@ class PongCommand {
 }
 ```
 
-You can also add a cooldown to your command by adding the `@Cooldown` annotation, as well what roles are required to execute the command.
+You can also add additional properties to your command by using following annotations, including:
+
+- `@Cooldown` - Adds a cooldown to the command
+- `@RolesRequired` - Adds a list of roles that are required to use the command
+- `@Description` - Adds a description to the command
+- `@Usage` - Adds a usage to the command
+- `@RestrictToChannels` - Adds a list of channels where the command can be used
 
 ```kotlin
+const val ADMIN_ROLE_ID = "1097870977339237257"
+
 @Command("ping")
 @Cooldown(5)
-@RolesRequired(["1097870977339237257"])
+@RolesRequired([ADMIN_ROLE_ID])
 class PongCommand {
 
     fun execute() {
@@ -115,7 +123,7 @@ In this example, I will use the `TextChannel` parameter to send a message to the
 ```kotlin
 @Command("ping")
 @Cooldown(5)
-@RolesRequired(["1097870977339232347"])
+@RolesRequired([ADMIN_ROLE_ID])
 class PongCommand {
 
     fun execute(channel: TextChannel) {

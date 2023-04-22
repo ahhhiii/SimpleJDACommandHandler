@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.8.0"
     `maven-publish`
+    id ("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "net.bruhitsalex.sjch"
