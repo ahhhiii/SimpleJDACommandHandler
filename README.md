@@ -20,7 +20,7 @@ Lightweight library to create commands for JDA using annotations, with autofill 
     <dependency>
         <groupId>com.github.bruhitsalex</groupId>
         <artifactId>SimpleJDACommandHandler</artifactId>
-        <version>1.2-SNAPSHOT</version>
+        <version>1.0.2-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.bruhitsalex:SimpleJDACommandHandler:1.2-SNAPSHOT")
+    implementation("com.github.bruhitsalex:SimpleJDACommandHandler:1.0.2-SNAPSHOT")
 }
 ```
 
@@ -102,6 +102,13 @@ The parameters can be of the following types:
 - `Message` - The message that triggered the command
 - `JDA` - The JDA instance
 - `EmbedBuilder` - An template embed builder that you can use to create an embed
+
+There are also parameters that come from the library internals, which may be useful for something like a help command. These are:
+
+- `ICommandHandler` - The command handler instance
+- `CommandRegistrator` - The command registrator instance
+- `HandlerId` - The ID of the command handler
+- `ICommand` - The command instance
 
 In this example, I will use the `TextChannel` parameter to send a message to the channel where the command was triggered.
 

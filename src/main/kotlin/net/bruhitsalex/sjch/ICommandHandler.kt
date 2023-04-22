@@ -88,6 +88,7 @@ open class ICommandHandler(
                     ICommandHandler::class.java -> params[i] = (this)
                     CommandRegistrator::class.java -> params[i] = (commandRegistrator)
                     HandlerId::class.java -> params[i] = (HandlerId(handlerId))
+                    ICommand::class.java -> params[i] = (cmd)
                     else -> throw IllegalArgumentException("Unknown parameter type: ${parameter.type}")
                 }
             }
