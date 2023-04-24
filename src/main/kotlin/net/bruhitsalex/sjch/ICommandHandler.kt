@@ -94,6 +94,7 @@ open class ICommandHandler(
             }
         }
 
+        event.channel.sendTyping().queue()
         commandRegistrator.setCooldown(event.member!!, cmd)
 
         runBlocking {
