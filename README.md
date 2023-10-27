@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.bruhitsalex:SimpleJDACommandHandler:1.0.3-SNAPSHOT")
+    implementation("com.github.ahhhiii:SimpleJDACommandHandler:1.0.3-SNAPSHOT")
 }
 ```
 
